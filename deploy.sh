@@ -2,17 +2,30 @@
 set -e
 
 VERSION=$1
+SILENT=$2
+
 TAG=`git tag -l | tr -d '\n'`
 
 if [ -z ${VERSION} ]; then
     echo Version not set
     exit 1
 fi
-if git status; then
-    echo -e "Continue without committing changes? (Y/y): "
-    read CONTINUE
+if [[ -z ${SILENT} ]]; then
+    if [[ -z "`git status --porcelain`" ]]; then
+        CONTINUE=y
+    else
+        git status -s
+        echo -e "Continue without committing changes? (Y/y): "
+        read CONTINUE
+    fi
 else
-    CONTINUE=y
+    if [[ -z "`git status --porcelain`" ]]; then
+        CONTINUE=y
+    else
+        git add .
+        git commit -m "Bump v$VERSION"
+        CONTINUE=y
+    fi
 fi
 
 if [[ "y" == ${CONTINUE} ]] || [[  "Y" == ${CONTINUE} ]]; then
