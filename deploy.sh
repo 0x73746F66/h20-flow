@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+
 VERSION=$1
 
 if [ -z ${VERSION} ]; then
@@ -14,7 +15,8 @@ read CONTINUE
 if [[ "y" == ${CONTINUE} ]] || [[  "Y" == ${CONTINUE} ]]; then
     git add .
     git commit -m "Version ${VERSION}\n$2" && \
-        git push github master --tags ${VERSION}
+        git tag ${VERSION}
+        git push github master --tags
 
     sudo docker build . --force-rm --rm -t chrisdlangton/h2o-flow:${VERSION} --compress && \
         sudo docker push chrisdlangton/h2o-flow:${VERSION} && \
