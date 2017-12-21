@@ -2,7 +2,7 @@
 set -e
 
 VERSION=$1
-SILENT=$2
+COMMIT=$2
 
 TAG=`git tag -l | tr -d '\n'`
 
@@ -10,7 +10,7 @@ if [ -z ${VERSION} ]; then
     echo Version not set
     exit 1
 fi
-if [[ -z ${SILENT} ]]; then
+if [[ -z ${COMMIT} ]]; then
     if [[ -z "`git status --porcelain`" ]]; then
         CONTINUE=y
     else
