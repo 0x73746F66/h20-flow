@@ -37,7 +37,7 @@ if [[ "y" == ${CONTINUE} ]] || [[  "Y" == ${CONTINUE} ]]; then
     fi
 
     echo "Pushing master"
-    git push github master --tags
+    git push origin master --tags
 
     if grep -q 'auths": {}' ~/.docker/config.json ; then
         echo "Docker is not logged in"
