@@ -19,9 +19,11 @@ if [[ -z ${COMMIT} ]]; then
         read CONTINUE
     fi
 else
+    echo "Checking for changes"
     if [[ -z "`git status --porcelain`" ]]; then
         CONTINUE=y
     else
+        echo "Attempting commit"
         git add .
         git commit -m "Bump v$VERSION"
         CONTINUE=y
@@ -30,16 +32,21 @@ fi
 
 if [[ "y" == ${CONTINUE} ]] || [[  "Y" == ${CONTINUE} ]]; then
     if [ "${TAG}" != "${VERSION}" ]; then
-        echo tagging
-        exit
+        echo "Tagging version ${VERSION}"
         git tag ${VERSION}
     fi
-    exit
+
+    echo "Pushing master"
     git push github master --tags
 
-    sudo docker build . --force-rm --rm -t chrisdlangton/h2o-flow:${VERSION} --compress && \
-        sudo docker push chrisdlangton/h2o-flow:${VERSION} && \
-        sudo docker push chrisdlangton/h2o-flow:latest && \
+    if grep -q 'auths": {}' ~/.docker/config.json ; then
+        echo "Docker is not logged in"
+        docker login
+    fi
+    echo "Pushing to Docker hub"
+    docker build . --force-rm --rm -t chrisdlangton/h2o-flow:${VERSION} --compress && \
+        docker push chrisdlangton/h2o-flow:${VERSION} && \
+        docker push chrisdlangton/h2o-flow:latest && \
         echo ok && exit
 
     echo Failed
