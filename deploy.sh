@@ -39,14 +39,14 @@ if [[ "y" == ${CONTINUE} ]] || [[  "Y" == ${CONTINUE} ]]; then
     echo "Pushing master"
     git push origin master --tags
 
-    if grep -q 'auths": {}' ~/.docker/config.json ; then
+    if sudo grep -q 'auths": {}' ~/.docker/config.json ; then
         echo "Docker is not logged in"
         docker login
     fi
     echo "Pushing to Docker hub"
-    docker build . --force-rm --rm -t chrisdlangton/h2o-flow:${VERSION} --compress && \
-        docker push chrisdlangton/h2o-flow:${VERSION} && \
-        docker push chrisdlangton/h2o-flow:latest && \
+    sudo docker build . --force-rm --rm -t chrisdlangton/h2o-flow:${VERSION} --compress && \
+        sudo docker push chrisdlangton/h2o-flow:${VERSION} && \
+        sudo docker push chrisdlangton/h2o-flow:latest && \
         echo ok && exit
 
     echo Failed
