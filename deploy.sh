@@ -9,14 +9,12 @@ if [ -z ${VERSION} ]; then
 fi
 
 git status
-echo -e "Continue? (Ctrl+C to cancel)"
+echo -e "Continue? (Y/y): "
 read CONTINUE
 
 if [[ "y" == ${CONTINUE} ]] || [[  "Y" == ${CONTINUE} ]]; then
-    git add .
-    git commit -m "Version ${VERSION}\n$2" && \
-        git tag ${VERSION}
-        git push github master --tags
+    git tag ${VERSION}
+    git push github master --tags
 
     sudo docker build . --force-rm --rm -t chrisdlangton/h2o-flow:${VERSION} --compress && \
         sudo docker push chrisdlangton/h2o-flow:${VERSION} && \
